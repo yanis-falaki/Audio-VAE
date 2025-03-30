@@ -3,11 +3,8 @@ import torch.nn.functional as F
 import math
 
 class Decoder(nn.Module):
-    def __init__(self, latentSize, preDeconvShape, convChannels, convKernels, convStrides, convPadding):
+    def __init__(self, convChannels, convKernels, convStrides, convPadding):
         super(Decoder, self).__init__()
-
-        self.preDeconvShape = preDeconvShape
-        self.mLinear = nn.Linear(latentSize, math.prod(self.preDeconvShape))
 
         self.numDeconvLayers = len(convChannels) - 1
         self.mDeconvLayers = nn.ModuleList()
@@ -20,9 +17,6 @@ class Decoder(nn.Module):
                 self.mBatchNorms.append(nn.BatchNorm2d(convChannels[i]))
     
     def forward(self, x):
-        x = self.mLinear(x)
-        x = x.view(x.shape[0], *self.preDeconvShape)
-
         for i in range(self.numDeconvLayers):
             x = self.mDeconvLayers[i](x)
 

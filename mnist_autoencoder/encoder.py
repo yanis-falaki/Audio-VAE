@@ -22,15 +22,10 @@ class Encoder(nn.Module):
 
         self.postConvShape = currentConvOutputShape
 
-        self.mLinear = nn.Linear(math.prod(self.postConvShape), latentSize)
-
     def forward(self, x):
         for i in range (self.numConvLayers):
             x = self.mConvLayers[i](x)
             x = self.mBatchNorms[i](x)
             x = F.relu(x)
-
-        x = torch.flatten(x, start_dim=1)
-        x = self.mLinear(x)
         
         return x
