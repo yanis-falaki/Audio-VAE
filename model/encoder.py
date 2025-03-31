@@ -22,6 +22,7 @@ class Encoder(nn.Module):
             return (param, param) if isinstance(param, int) else param
 
         currentShape = inputShape  # (channels, height, width)
+        self.output_paddings = []
 
         for i in range(self.numConvLayers):
             kernel = to_tuple(convKernels[i])
@@ -41,6 +42,13 @@ class Encoder(nn.Module):
             out_height = math.floor((currentShape[1] + 2*padding[0] - kernel[0]) / stride[0]) + 1
             out_width = math.floor((currentShape[2] + 2*padding[1] - kernel[1]) / stride[1]) + 1
             
+            # Calculate necessary output padding in decoder:
+            # output_padding = n_in - s*floor((n_in + 2p - k)/s) + 2p -k
+            # output_padding = n_in - s*(n_out - 1)
+            output_padding_vertical = currentShape[1] - stride[0]*(out_height - 1) + 2*padding[0] - kernel[0]
+            output_padding_horizontal = currentShape[2] - stride[1]*(out_width - 1) + 2*padding[1] - kernel[1]
+            self.output_paddings.append((output_padding_vertical, output_padding_horizontal))
+
             # Update shape for next iteration
             currentShape = (convChannels[i+1], out_height, out_width)
 

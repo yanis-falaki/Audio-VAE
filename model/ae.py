@@ -13,12 +13,12 @@ class Autoencoder(nn.Module):
     def __init__(self, latentSize, inputShape, convChannels, convKernels, convStrides, convPadding):
         super(Autoencoder, self).__init__()
 
-        self.mEncoder = Encoder(latentSize, inputShape, convChannels, convKernels, convStrides, convPadding)
+        self.mEncoder = Encoder(inputShape, convChannels, convKernels, convStrides, convPadding)
 
         self.bottleneck = nn.Linear(math.prod(self.mEncoder.postConvShape), latentSize)
         self.unBottleneck = nn.Linear(latentSize, math.prod(self.mEncoder.postConvShape))
 
-        self.mDecoder = Decoder(convChannels, convKernels, convStrides, convPadding)
+        self.mDecoder = Decoder(convChannels, convKernels, convStrides, convPadding, self.mEncoder.output_paddings)
 
         self.latent = None
 
@@ -53,7 +53,7 @@ class VariationalAutoencoder(nn.Module):
 
         self.unBottleneck = nn.Linear(latent_size, math.prod(self.mEncoder.postConvShape))
 
-        self.mDecoder = Decoder(convChannels, convKernels, convStrides, convPadding)
+        self.mDecoder = Decoder(convChannels, convKernels, convStrides, convPadding, self.mEncoder.output_paddings)
 
         self.latent = None
 
