@@ -75,6 +75,7 @@ class Saver:
     def save_feature(self, feature, file_path):
         save_path = self._generate_save_path(file_path)
         np.save(save_path, feature)
+        return save_path
 
     def save_min_max_values(self, min_max_values):
         save_path = os.path.join(self.min_max_values_save_dir, "min_max_values.pkl")
@@ -107,7 +108,7 @@ class PreprocessingPipeline:
         self.extractor = None
         self.normalizer = None
         self.saver = None
-        self.min_max_values = {}
+        self.min_max_values = dict()
         self._loader = None
         self._num_expected_samples = None
         
