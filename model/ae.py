@@ -46,7 +46,7 @@ class VariationalAutoencoder(nn.Module):
         super(VariationalAutoencoder, self).__init__()
         self.latent_size = latent_size
 
-        self.mEncoder = Encoder(latent_size, inputShape, convChannels, convKernels, convStrides, convPadding)
+        self.mEncoder = Encoder(inputShape, convChannels, convKernels, convStrides, convPadding)
 
         self.fcMu = nn.Linear(math.prod(self.mEncoder.postConvShape), latent_size)
         self.fcLogVar = nn.Linear(math.prod(self.mEncoder.postConvShape), latent_size)
